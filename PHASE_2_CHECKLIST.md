@@ -1,0 +1,24 @@
+# Phase 2 Checklist
+
+- [x] Shared storage abstraction for all log workflows
+- [x] MongoDB persistence path for logs
+- [x] MongoDB collections for patterns, alerts, users, audit logs and alert events
+- [x] MongoDB index creation at startup
+- [x] JSON / JSONL / CSV / text file parser
+- [x] API-key protected log ingestion option
+- [x] Alert evaluation with threshold, time window and cooldown
+- [x] Persistent alert trigger history
+- [x] Persistent pattern detection
+- [x] Password hashing (PBKDF2-SHA256)
+- [x] Mongo-backed user authentication
+- [x] Administrator user management
+- [x] Audit logging
+- [x] SignalR dashboard refresh
+- [x] Application health endpoint
+- [x] Fixed dashboard chart undefined label issue
+- [x] Atlas-safe configuration via environment variables / user secrets
+- [ ] Connect this build to the user's actual MongoDB Atlas cluster
+- [ ] Full local regression test after Atlas connection
+- [ ] Phase 2 cloud deployment to Azure
+- [ ] Production secret management (Azure Key Vault/App Service settings)
+- [ ] Final cloud smoke test and deployment verification
