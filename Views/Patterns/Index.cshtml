@@ -1,0 +1,3 @@
+@model List<PatternViewModel>
+@{ViewData["Title"]="Log Patterns";}
+<div class="hero-row"><h2 class="lede">Repeated messages from the last 7 days, grouped so you can fix the cause once.</h2></div><section class="panel"><div class="pattern-grid">@foreach(var p in Model){<article class="pattern-card"><div class="pattern-top"><span class="severity @p.Severity.ToLower()">@p.Severity</span><strong>@p.Occurrences.ToString("N0")</strong></div><h3>@p.Name</h3><p>@p.Service</p><div class="bar"><i style="width:@Math.Min(100,p.Occurrences/2.0)%"></i></div></article>}</div></section>

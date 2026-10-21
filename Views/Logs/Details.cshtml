@@ -1,0 +1,3 @@
+@model LogEntry
+@{ViewData["Title"]="Log Details";}
+<section class="detail-grid"><div class="panel detail-main"><div class="detail-title"><span class="severity @Model.Severity.ToLower()">@Model.Severity</span><h2>@Model.Message</h2></div><div class="detail-meta"><div><span>Timestamp</span><b>@Model.Timestamp.ToLocalTime().ToString("dd MMM yyyy HH:mm:ss")</b></div><div><span>Application</span><b>@Model.Application</b></div><div><span>Service</span><b>@Model.Service</b></div><div><span>Source</span><b>@Model.Source</b></div><div><span>Status</span><b>@Model.StatusCode</b></div><div><span>Environment</span><b>@Model.Environment</b></div><div><span>IP Address</span><b>@Model.IpAddress</b></div><div><span>Request ID</span><b>@Model.RequestId</b></div></div></div></section>

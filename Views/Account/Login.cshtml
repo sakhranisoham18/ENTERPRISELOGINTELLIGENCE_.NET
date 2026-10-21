@@ -1,0 +1,29 @@
+@model EnterpriseLogIntelligence.ViewModels.LoginViewModel
+@inject IConfiguration Configuration
+@{ Layout = null; }
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Sign in – Enterprise Log Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Martian+Mono:wdth,wght@75..112,300..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
+</head>
+<body class="login-page">
+<main class="login-card">
+  <div class="brand center"><span class="brand-mark" aria-hidden="true"></span><div><strong>Enterprise Log</strong><small>Intelligence Platform</small></div></div>
+  <h1>Sign in</h1>
+  <p>Use your Enterprise Log account to open the operations dashboard.</p>
+  <form method="post" class="form-stack">@Html.AntiForgeryToken()<input type="hidden" asp-for="ReturnUrl"/>
+    <label>Username<input asp-for="Username" autocomplete="username"/></label>
+    <label>Password<input asp-for="Password" type="password" autocomplete="current-password"/></label>
+    @if(!ViewData.ModelState.IsValid){<div class="error">That username and password didn't match an active account. Check both and try again.</div>}
+    <button type="submit" class="btn btn-primary btn-lg">Sign in</button>
+  </form>
+  <small class="login-hint">Local setup: admin / admin123</small>
+</main>
+</body>
+</html>

@@ -1,0 +1,51 @@
+@inject IConfiguration Configuration
+@{
+    var ctl = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+    string Cur(string c) => string.Equals(ctl, c, StringComparison.OrdinalIgnoreCase) ? "nav-item active" : "nav-item";
+    string? Aria(string c) => string.Equals(ctl, c, StringComparison.OrdinalIgnoreCase) ? "page" : null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>@ViewData["Title"] – Enterprise Log Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Martian+Mono:wdth,wght@75..112,300..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@@microsoft/signalr@10.0.0/dist/browser/signalr.min.js"></script>
+</head>
+<body>
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="brand"><span class="brand-mark" aria-hidden="true"></span><div><strong>Enterprise Log</strong><small>Intelligence Platform</small></div></div>
+    <nav aria-label="Main">
+      <a asp-controller="Dashboard" asp-action="Index" class="@Cur("Dashboard")" aria-current="@Aria("Dashboard")">Dashboard</a>
+      <a asp-controller="Logs" asp-action="Index" class="@Cur("Logs")" aria-current="@Aria("Logs")">Log explorer</a>
+      <a asp-controller="Patterns" asp-action="Index" class="@Cur("Patterns")" aria-current="@Aria("Patterns")">Patterns</a>
+      <a asp-controller="Alerts" asp-action="Index" class="@Cur("Alerts")" aria-current="@Aria("Alerts")">Alerts</a>
+      <a asp-controller="Ingestion" asp-action="Index" class="@Cur("Ingestion")" aria-current="@Aria("Ingestion")">Ingestion</a>
+      <a asp-controller="Generator" asp-action="Index" class="@Cur("Generator")" aria-current="@Aria("Generator")">Generator</a>
+      <a asp-controller="Reports" asp-action="Index" class="@Cur("Reports")" aria-current="@Aria("Reports")">Reports</a>
+      @if(User.IsInRole("Administrator")){<a asp-controller="Admin" asp-action="Index" class="@Cur("Admin")" aria-current="@Aria("Admin")">Administration</a>}
+    </nav>
+    <div class="sidebar-footer"><span class="status-dot"></span><span>@((Configuration["Storage:Provider"] ?? "InMemory") == "MongoDB" ? "MongoDB storage" : "Local demo storage")</span></div>
+  </aside>
+  <main class="main">
+    <header class="topbar">
+      <h1>@ViewData["Title"]</h1>
+      <div class="top-actions">
+        <span class="live-pill"><i></i> Live</span>
+        <span class="user-pill">@User.Identity?.Name</span>
+        <form method="post" asp-controller="Account" asp-action="Logout"><button class="logout" type="submit">Log out</button></form>
+      </div>
+    </header>
+    <section class="content">@RenderBody()</section>
+  </main>
+</div>
+<script src="~/js/site.js" asp-append-version="true"></script>
+@await RenderSectionAsync("Scripts",required:false)
+</body>
+</html>

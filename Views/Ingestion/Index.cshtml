@@ -1,0 +1,16 @@
+@inject IConfiguration Configuration
+@{ViewData["Title"]="Log Ingestion";}
+<div class="grid-2"><section class="panel"><div class="panel-head"><div><h2>Upload logs</h2></div></div><p class="muted">Phase 2 accepts plain text, JSON, JSONL and simple CSV logs. Size limit: @((Configuration.GetValue<long?>("Application:MaxUploadBytes") ?? 10485760)/(1024*1024)) MB.</p><form method="post" enctype="multipart/form-data" asp-action="Upload" class="form-stack"><input type="file" name="file" accept=".log,.txt,.json,.jsonl,.csv" required/><button class="btn btn-primary">Import logs</button></form>@if(TempData["Message"]!=null){<div class="success">@TempData["Message"]</div>}@if(TempData["Warning"]!=null){<div class="notice">@TempData["Warning"]</div>}@if(TempData["Error"]!=null){<div class="error">@TempData["Error"]</div>}</section>
+<section class="panel"><div class="panel-head"><div><h2>Send logs programmatically</h2></div></div><pre class="code-block">POST /api/logs
+Content-Type: application/json
+X-ELI-API-Key: &lt;your configured key&gt;
+
+{
+  "severity": "ERROR",
+  "service": "Payment Service",
+  "message": "Payment gateway timeout",
+  "environment": "Production",
+  "statusCode": 504
+}
+
+or send an array of log objects.</pre><p class="muted">The API key is optional in local development and should be configured before public deployment.</p></section></div>

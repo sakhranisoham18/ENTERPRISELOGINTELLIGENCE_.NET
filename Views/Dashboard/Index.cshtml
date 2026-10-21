@@ -1,0 +1,46 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"]="Dashboard";
+    var sevTotal = Model.Severity.Sum(s => s.Value);
+    var inv = System.Globalization.CultureInfo.InvariantCulture;
+}
+<div class="hero-row">
+  <h2 class="lede">@Model.TotalLogs.ToString("N0") events in the last 24 hours. @Model.Errors.ToString("N0") were errors and @Model.Critical.ToString("N0") were critical.</h2>
+  <a class="btn btn-primary" asp-controller="Generator" asp-action="Index">Generate test logs</a>
+</div>
+
+<div class="kpi-grid">
+  <div class="kpi"><span>Total logs</span><strong>@Model.TotalLogs.ToString("N0")</strong><small>Last 24 hours</small></div>
+  <div class="kpi danger"><span>Errors</span><strong>@Model.Errors.ToString("N0")</strong><small>@Model.ErrorRate.ToString("0.0")% of volume</small></div>
+  <div class="kpi warn"><span>Warnings</span><strong>@Model.Warnings.ToString("N0")</strong><small>Worth a look</small></div>
+  <div class="kpi critical"><span>Critical</span><strong>@Model.Critical.ToString("N0")</strong><small>Needs action first</small></div>
+</div>
+
+<div class="grid-2">
+  <section class="panel">
+    <div class="panel-head"><h2>Log activity</h2><span class="panel-tag">Last 24 hours</span></div>
+    <div class="chart-wrap"><canvas id="volumeChart" role="img" aria-label="Log volume over the last 24 hours"></canvas></div>
+  </section>
+  <section class="panel">
+    <div class="panel-head"><h2>Severity split</h2></div>
+    <div class="sevbar" role="img" aria-label="Share of events by severity">@foreach(var s in Model.Severity){<i class="sev-@s.Label.ToLower()" style="width:@((sevTotal==0 ? 0 : s.Value/sevTotal*100).ToString("0.##", inv))%" title="@s.Label"></i>}</div>
+    <ul class="sevlist">@foreach(var s in Model.Severity){<li><span class="severity @s.Label.ToLower()">@s.Label</span><b>@s.Value.ToString("N0")</b><em>@((sevTotal==0 ? 0 : s.Value/sevTotal).ToString("P1"))</em></li>}</ul>
+  </section>
+</div>
+
+<div class="grid-2">
+  <section class="panel">
+    <div class="panel-head"><h2>Busiest services</h2></div>
+    <div class="chart-wrap"><canvas id="serviceChart" role="img" aria-label="Events per service"></canvas></div>
+  </section>
+  <section class="panel">
+    <div class="panel-head"><h2>Recurring events</h2><a asp-controller="Patterns" asp-action="Index">View all patterns</a></div>
+    <div class="pattern-list">@foreach(var p in Model.Patterns){<a asp-controller="Patterns" asp-action="Index" class="pattern-row"><div><strong>@p.Name</strong><small>@p.Service</small></div><div><span class="severity @p.Severity.ToLower()">@p.Severity</span><b>@p.Occurrences</b></div></a>}</div>
+  </section>
+</div>
+
+<section class="panel">
+  <div class="panel-head"><h2>Recent critical and security events</h2><a asp-controller="Logs" asp-action="Index" asp-route-Severity="CRITICAL">Open in log explorer</a></div>
+  <div class="table-wrap"><table><thead><tr><th>Time</th><th>Severity</th><th>Service</th><th>Message</th></tr></thead><tbody>@foreach(var x in Model.RecentCritical){<tr><td>@x.Timestamp.ToLocalTime().ToString("HH:mm:ss")</td><td><span class="severity @x.Severity.ToLower()">@x.Severity</span></td><td>@x.Service</td><td>@x.Message</td></tr>}@if(!Model.RecentCritical.Any()){<tr><td colspan="4"><div class="empty">Nothing critical in the last 24 hours.</div></td></tr>}</tbody></table></div>
+</section>
+@section Scripts{<script>window.dashboardData={volume:@Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Volume)),services:@Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Services))};</script><script src="~/js/dashboard.js" asp-append-version="true"></script>}
